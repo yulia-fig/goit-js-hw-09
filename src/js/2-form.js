@@ -1,3 +1,4 @@
+const form = document.querySelector('.feedback-form');
 const STORAGE_KEY = "feedback-form-state";
 
 let formData = {
@@ -5,31 +6,33 @@ let formData = {
   message: ""
 };
 
-const form = document.querySelector(".feedback-form");
-const emailInput = form.elements.email;
-const messageInput = form.elements.message;
-
+// Завантаження даних з localStorage
 const savedData = localStorage.getItem(STORAGE_KEY);
 if (savedData) {
   formData = JSON.parse(savedData);
-  emailInput.value = formData.email || "";
-  messageInput.value = formData.message || "";
+  form.email.value = formData.email;
+  form.message.value = formData.message;
 }
 
-form.addEventListener("input", (e) => {
+// Обробка input
+form.addEventListener('input', (e) => {
   const { name, value } = e.target;
-  formData[name] = value.trim();
+  formData[name] = value; // зберігаємо **точно таке ж значення**
   localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 });
 
-form.addEventListener("submit", (e) => {
+// Обробка submit
+form.addEventListener('submit', (e) => {
   e.preventDefault();
-  if (!formData.email || !formData.message) {
+
+  if (form.email.value.trim() === "" || form.message.value.trim() === "") {
     alert("Fill please all fields");
     return;
   }
+
   console.log(formData);
+
   form.reset();
-  formData = { email: "", message: "" };
   localStorage.removeItem(STORAGE_KEY);
+  formData = { email: "", message: "" };
 });
